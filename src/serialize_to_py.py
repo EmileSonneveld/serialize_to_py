@@ -12,22 +12,25 @@ class ObjectIsDirectlyLinkableError(Exception):
 
 
 def serialize(src: object, opts: dict = None) -> str:
-    opts = utils.merge_two_dicts({
-        'maxDepth': 99999,
-        'evaluateSimpleGetters': True,
-        'unsafe': False,
-        'space': '  ',
-        'alwaysQuote': False,
-        'fullPaths': False,
-        'needle': None,
-        'objectsToLinkTo': None,
-        'trySerializeList': []
-    }, opts)
+    opts = utils.merge_two_dicts(
+        {
+            "maxDepth": 99999,
+            "evaluateSimpleGetters": True,
+            "unsafe": False,
+            "space": "  ",
+            "alwaysQuote": False,
+            "fullPaths": False,
+            "needle": None,
+            "objectsToLinkTo": None,
+            "trySerializeList": [],
+        },
+        opts,
+    )
     if type(opts["space"]) == int:
         opts["space"] = " " * opts["space"]
     elif not opts["space"]:
         print("TODO: Disallow this in Python?")
-        opts["space"] = ''
+        opts["space"] = ""
     newline = "\n" if opts["space"] else ""
     refs = Ref([], opts)
 
@@ -53,7 +56,7 @@ def serialize(src: object, opts: dict = None) -> str:
 
         try:
             if sourceType == "NoneType":
-                codeMain += 'None'
+                codeMain += "None"
             elif sourceType == "str":
                 codeMain += utils.quote(source, opts) or '""'
             elif sourceType == "function":
@@ -63,7 +66,7 @@ def serialize(src: object, opts: dict = None) -> str:
                 codeMain += str(source)
             elif sourceType == "float" or sourceType == "int":
                 if source == 0 and math.copysign(1, source) == -1:
-                    codeMain += '-0'  # 0 === -0, so this is probably not important.
+                    codeMain += "-0"  # 0 === -0, so this is probably not important.
                 elif math.isfinite(source):
                     codeMain += str(source)
                 else:
@@ -135,14 +138,14 @@ def serialize(src: object, opts: dict = None) -> str:
             raise
         except Exception as e:
             if refs.unmarkVisited(source):
-                print('Dirty error.' + str(e))
+                print("Dirty error." + str(e))
             codeMain = f"None # {codeMain.replace('*/', '* /')} {errorToValue(e)} "
 
-        return {'codeBefore': codeBefore, 'codeMain': codeMain, 'codeAfter': codeAfter}
+        return {"codeBefore": codeBefore, "codeMain": codeMain, "codeAfter": codeAfter}
 
     def errorToValue(err):
         message = str(err)
-        idx = message.find('\n')
+        idx = message.find("\n")
         if idx != -1:
             message = message[0:idx]
         return f"Error: {message}.Breadcrumb: {refs.join()}"
@@ -157,14 +160,14 @@ def serialize(src: object, opts: dict = None) -> str:
 
     # Now reset, and go over the real object
     objCounter = 0
-    refs.breadcrumbs = ['root']
+    refs.breadcrumbs = ["root"]
     absorbPhase = False
 
     ret = stringify(src, 2)
-    if ret['codeBefore'] == '' and ret['codeAfter'] == '':
+    if ret["codeBefore"] == "" and ret["codeAfter"] == "":
         # Keep compatibility with default JSON
         # TODO: Check for compatibility with example library.
-        return ret['codeMain'].replace("\n" + opts["space"], "\n")
+        return ret["codeMain"].replace("\n" + opts["space"], "\n")
 
     return f"""
 def serialise_to_python_temporary_function():

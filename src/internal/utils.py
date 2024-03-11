@@ -13,19 +13,19 @@ CHARS_REGEXP = """[\\\r\n\t"]"""
 
 UNICODE_CHARS = {
     '"': '\\"',
-    '\n': '\\n',
-    '\r': '\\r',
-    '\t': '\\t',
+    "\n": "\\n",
+    "\r": "\\r",
+    "\t": "\\t",
     # eval('"\\u005C"') == eval('"\\\\"')
-    '\u005C': '\\u005C',  # Backslash: \
+    "\u005C": "\\u005C",  # Backslash: \
     # '\\': '\\\\',  # Was needed before in serialise-javascript tests.
-    '<': '\\u003C',
-    '>': '\\u003E',
-    '/': '\\u002F',
+    "<": "\\u003C",
+    ">": "\\u003E",
+    "/": "\\u002F",
     #  '/': '/',
-    '\0': '\\x00',  # null byte in source code did not cause problems. But it feels dangerous
-    '\u2028': '\\u2028',  # LINE SEPARATOR
-    '\u2029': '\\u2029',  # PARAGRAPH SEPARATOR
+    "\0": "\\x00",  # null byte in source code did not cause problems. But it feels dangerous
+    "\u2028": "\\u2028",  # LINE SEPARATOR
+    "\u2029": "\\u2029",  # PARAGRAPH SEPARATOR
 }
 
 
@@ -36,7 +36,7 @@ def safeString(s):
 
 
 def unsafeString(s):
-    for key in "\\\r\n\t\x00\"":
+    for key in '\\\r\n\t\x00"':
         s = s.replace(key, UNICODE_CHARS[key])
     return s
 

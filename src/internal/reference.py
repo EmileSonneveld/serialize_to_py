@@ -15,7 +15,7 @@ class Ref:
 
     def visitedRefSet(self, source, path):
         if source in self.visitedRefsSource:
-            raise Exception('this object was already visited!')
+            raise Exception("this object was already visited!")
         self.visitedRefsSource.append(source)
         self.visitedRefsPath.append(path)
 
@@ -35,11 +35,11 @@ class Ref:
 
     def getStatementForObject(self, source):
         if not self.isVisited(source):
-            raise Exception('Object should be visited first')
+            raise Exception("Object should be visited first")
         for i in range(len(self.visitedRefsSource)):
             if self.visitedRefsSource[i] == source:
                 return self.visitedRefsPath[i]
-        raise Exception('Object should be visited first. Catcher')
+        raise Exception("Object should be visited first. Catcher")
 
     def push(self, gettingStatement):
         self.breadcrumbs.append(gettingStatement)
