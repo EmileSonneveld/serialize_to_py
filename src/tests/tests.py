@@ -290,3 +290,11 @@ class MyTest(unittest.TestCase):
         res = looseJsonParse(codeStr)  # , locals_bag=opts["objectsToLinkTo"]
         assert res["logger"].name is not None
         res["logger"].info("Some message")
+
+    def test_pyspark(self):
+        import pyspark
+
+        context = pyspark.SparkContext.getOrCreate()
+        rdd = context.parallelize([9, 10, 11, 12])
+
+        self.serialise_test("rdd", rdd)

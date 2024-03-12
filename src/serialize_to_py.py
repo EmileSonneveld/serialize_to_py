@@ -91,23 +91,20 @@ def serialize(src: object, opts: dict = None) -> str:
                 # tmp[len(tmp) - 1] = (tmp[len(tmp) - 1])[0: -1]
                 codeMain += "{" + f"{newline}{(',' + newline).join(tmp)}{newline}{opts['space'] * (indent - 1)}" + "}"
             elif sourceType == "datetime":
-                codeBefore += "  import datetime"
+                codeBefore += "  import datetime\n"
                 codeMain += repr(source)
+            elif sourceType == "RDD":
+                codeBefore += "  import pyspark\n"
+                codeBefore += "  context = pyspark.SparkContext.getOrCreate()\n"
+                codeMain += f"context.parallelize({source.collect()})"
             elif sourceType == "list":
                 refs.markAsVisited(source)
                 tmp = []
-                mutationsFromNowOn = False
 
                 for el in source:
                     if refs.isVisited(el):
                         tmp.append(f'{opts["space"] * indent}"Linked later"')
-                        mutationsFromNowOn = True
                         codeAfter += f"  {refs.join()} = {refs.getStatementForObject(el)}\n"
-                    elif mutationsFromNowOn:
-                        ret = stringify(el, indent + 1)
-                        codeBefore += ret["codeBefore"]
-                        codeAfter += f"  ${refs.join()} = ${ret['codeMain']}\n"
-                        codeAfter += ret["codeAfter"]
                     else:
                         ret = stringify(el, indent + 1)
                         codeBefore += ret["codeBefore"]
