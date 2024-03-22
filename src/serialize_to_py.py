@@ -96,12 +96,18 @@ def serialize(src: object, opts: dict = None) -> str:
             elif sourceType == "RDD":
                 codeBefore += "  import pyspark\n"
                 codeBefore += "  context = pyspark.SparkContext.getOrCreate()\n"
-                codeMain += f"context.parallelize({source.collect()})"
+                ret = stringify(source.collect(), indent + 1)
+                codeBefore += ret["codeBefore"]
+                codeMain += f"context.parallelize({ret['codeMain']})"
+                codeAfter += ret["codeAfter"]
             elif sourceType == "list":
                 refs.markAsVisited(source)
                 tmp = []
 
-                for el in source:
+                # loop over indexes in source:
+                for i in range(len(source)):
+                    el = source[i]
+                    refs.push(f"[{i}]")
                     if refs.isVisited(el):
                         tmp.append(f'{opts["space"] * indent}"Linked later"')
                         codeAfter += f"  {refs.join()} = {refs.getStatementForObject(el)}\n"
@@ -110,6 +116,7 @@ def serialize(src: object, opts: dict = None) -> str:
                         codeBefore += ret["codeBefore"]
                         tmp.append(f"{opts['space'] * indent}{ret['codeMain']}")
                         codeAfter += ret["codeAfter"]
+                    refs.breadcrumbs.pop()
 
                 codeMain += "[" + f"{newline}{(',' + newline).join(tmp)}{newline}{opts['space'] * (indent - 1)}" + "]"
             else:
