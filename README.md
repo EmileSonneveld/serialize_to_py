@@ -42,7 +42,7 @@ def serialise_to_python_temporary_function():
     ]
   }
   root["ob"]["reusedObject"]["cyclicSelf"] = root["ob"]["reusedObject"];
-  root["arr"] = root["ob"]["reusedObject"]
+  root["arr"][2] = root["ob"]["reusedObject"]
 
   return root
 serialise_to_python_temporary_function()

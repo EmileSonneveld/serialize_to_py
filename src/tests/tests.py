@@ -309,7 +309,7 @@ class MyTest(unittest.TestCase):
             return s
 
         opts = {
-            "trySerializeList": [trySerializePysparkObject],
+            # "trySerializeList": [trySerializePysparkObject],
             # "objectsToLinkTo": {'logging': logging}
         }
         codeStr = serialize(rdd, opts)
