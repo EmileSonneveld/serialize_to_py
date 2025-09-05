@@ -10,6 +10,8 @@ repos:
       - id: check-json
       - id: check-yaml
       - id: check-toml
+      - id: mixed-line-ending
+      - id: check-case-conflict
   - repo: https://github.com/akaihola/darker
     rev: v2.1.1
     hooks:
