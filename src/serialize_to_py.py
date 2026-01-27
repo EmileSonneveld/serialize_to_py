@@ -72,7 +72,7 @@ def serialize(src: object, opts: dict = None) -> str:
                 else:
                     codeMain += f'float("{str(source)}")'
             # elif sourceType == "list": TODO
-            elif sourceType == "dict":
+            elif sourceType == "dict" or isinstance(source, dict):
                 refs.markAsVisited(source)
                 tmp = []
                 for key in source.keys():
